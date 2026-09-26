@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitBuddy - All Users</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            color: #f1f5f9;
+            background:
+                linear-gradient(rgba(10, 15, 25, 0.8), rgba(10, 15, 25, 0.8)),
+                url("/static/images/gym-bg.jpg") center / cover no-repeat fixed,
+                linear-gradient(135deg, #0f172a, #1e293b);
+            display: flex;
+            justify-content: center;
+            padding: 30px 15px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            background: rgba(20, 27, 40, 0.9);
+            border-radius: 16px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
+            padding: 24px;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 0 0 20px;
+            font-size: 1.8rem;
+        }
+
+        /* Horizontal scroll on small screens */
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1000px;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: #2563eb;
+            color: #fff;
+            text-align: left;
+            padding: 12px 10px;
+            font-weight: 500;
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            padding: 10px;
+            vertical-align: top;
+            border-bottom: 1px solid #334155;
+        }
+
+        tr:nth-child(even) td { background: rgba(255, 255, 255, 0.03); }
+        tr:hover td { background: rgba(59, 130, 246, 0.08); }
+
+        .plan-cell { width: 32%; }
+
+        pre {
+            margin: 0;
+            max-height: 360px;
+            overflow: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.78rem;
+            line-height: 1.45;
+            color: #e2e8f0;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: #94a3b8;
+        }
+
+        .nav { text-align: center; margin-top: 20px; }
+        .nav a { color: #93c5fd; text-decoration: none; }
+        .nav a:hover { text-decoration: underline; }
+
+        @media (max-width: 600px) {
+            .container { padding: 14px; }
+            h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 FitBuddy - All Users &amp; Workout Plans</h1>
+
+        <div class="table-wrap">
+            <table>
+                <tr>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Weight (kg)</th>
+                    <th>Goal</th>
+                    <th>Intensity</th>
+                    <th class="plan-cell">Original Plan</th>
+                    <th class="plan-cell">Updated Plan</th>
+                </tr>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.age }}</td>
+                    <td>{{ user.weight }}</td>
+                    <td>{{ user.goal }}</td>
+                    <td>{{ user.intensity }}</td>
+                    <td class="plan-cell"><pre>{{ user.original_plan }}</pre></td>
+                    <td class="plan-cell"><pre>{{ user.updated_plan }}</pre></td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="empty">No users yet. Generate a plan to get started.</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="nav"><a href="/">← Back to FitBuddy</a></div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitBuddy - Your Workout Plan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            color: #f1f5f9;
+            background:
+                linear-gradient(rgba(10, 15, 25, 0.7), rgba(10, 15, 25, 0.7)),
+                url("/static/images/gym-bg.jpg") center / cover no-repeat fixed,
+                linear-gradient(135deg, #0f172a, #1e293b);
+            display: flex;
+            justify-content: center;
+            padding: 30px 15px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        h2 {
+            margin: 0 0 14px;
+            text-align: center;
+            font-size: 1.35rem;
+        }
+
+        .card {
+            background: rgba(20, 27, 40, 0.88);
+            border-radius: 16px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
+            padding: 24px 28px;
+        }
+
+        .info-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 30px;
+        }
+
+        .info-grid p { margin: 0; flex: 1 1 240px; }
+        .info-grid strong { color: #93c5fd; }
+
+        /* Scrollable box that keeps Gemini's line breaks / markdown legible */
+        .plan-box {
+            max-height: 520px;
+            overflow: auto;
+            background: #0f172a;
+            border-radius: 10px;
+            padding: 18px;
+            border: 1px solid #334155;
+        }
+
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            color: #e2e8f0;
+        }
+
+        .tip { margin: 0; line-height: 1.6; white-space: pre-line; }
+
+        .banner {
+            border-radius: 10px;
+            padding: 14px 18px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .banner.success {
+            background: rgba(22, 163, 74, 0.2);
+            border: 1px solid #16a34a;
+            color: #86efac;
+        }
+
+        .banner.error {
+            background: rgba(220, 38, 38, 0.2);
+            border: 1px solid #dc2626;
+            color: #fecaca;
+        }
+
+        form { display: flex; flex-direction: column; gap: 10px; }
+
+        label { font-size: 0.9rem; font-weight: 500; color: #cbd5e1; }
+
+        input, textarea {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: #f1f5f9;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        textarea { min-height: 90px; resize: vertical; }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #3b82f6;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        button:hover { background: #2563eb; transform: translateY(-1px); }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav a { color: #93c5fd; text-decoration: none; }
+        .nav a:hover { text-decoration: underline; }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.5rem; }
+            .card { padding: 18px 16px; }
+            .plan-box { max-height: 420px; padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 Your Personalized Workout Plan</h1>
+
+        {% if error %}
+        <div class="banner error">⚠️ {{ error }}</div>
+        {% endif %}
+
+        {% if username %}
+        <!-- User Information -->
+        <div class="card">
+            <h2>User Information</h2>
+            <div class="info-grid">
+                <p><strong>Name:</strong> {{ username }}</p>
+                <p><strong>User ID:</strong> {{ user_id }}</p>
+                <p><strong>Age:</strong> {{ age }}</p>
+                <p><strong>Weight:</strong> {{ weight }} kg</p>
+                <p><strong>Goal:</strong> {{ goal }}</p>
+                <p><strong>Intensity:</strong> {{ intensity }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if updated_plan %}
+        <div class="banner success">✅ Your plan has been updated based on your feedback!</div>
+        {% endif %}
+
+        {% if workout_plan %}
+        <!-- Workout Plan -->
+        <div class="card">
+            <h2>Workout Plan</h2>
+            <div class="plan-box">
+                <pre>{{ workout_plan }}</pre>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if nutrition_tip %}
+        <!-- Nutrition Tip -->
+        <div class="card">
+            <h2>💡 Nutrition Tip</h2>
+            <p class="tip">{{ nutrition_tip }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Feedback form -->
+        <div class="card">
+            <h2>📝 Share Your Feedback</h2>
+            <form action="/submit-feedback" method="post">
+                <label for="user_id">Your Unique User ID:</label>
+                <input type="number" id="user_id" name="user_id" value="{{ user_id or '' }}"
+                       placeholder="Enter the same User ID used to generate your plan" min="1" required>
+
+                <label for="feedback">Your Feedback:</label>
+                <textarea id="feedback" name="feedback"
+                          placeholder="Let us know how we can improve your plan... (e.g., more focus on cardio, include more rest days)"
+                          required></textarea>
+
+                <button type="submit">Submit Feedback</button>
+            </form>
+        </div>
+
+        <div class="nav">
+            <a href="/">← Generate a new plan</a>
+            <a href="/view-all-users">📋 View all users</a>
+        </div>
+    </div>
+</body>
+</html>

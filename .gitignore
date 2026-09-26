@@ -1,0 +1,8 @@
+# Secrets - never commit your real API key
+.env
+
+# Local environment and generated files
+venv/
+__pycache__/
+*.pyc
+fitbuddy.db

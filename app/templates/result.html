@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FitBuddy - Your Workout Plan</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="/static/css/loading.css" rel="stylesheet">
+    <script src="/static/js/loading.js" defer></script>
     <style>
         * { box-sizing: border-box; }
 
@@ -201,7 +203,12 @@
         <!-- Feedback form -->
         <div class="card">
             <h2>📝 Share Your Feedback</h2>
-            <form action="/submit-feedback" method="post">
+            <form action="/submit-feedback" method="post"
+                  data-loading-title="Updating your plan..."
+                  data-loading-button="Updating..."
+                  data-loading-steps="Finding your saved plan|Revising the plan with your feedback (Gemini Pro)|Refreshing your nutrition tip (Gemini Flash)|Saving the updated plan"
+                  data-loading-step-ms="5000"
+                  data-loading-note="AI updates usually take 10–30 seconds. Please keep this page open.">
                 <label for="user_id">Your Unique User ID:</label>
                 <input type="number" id="user_id" name="user_id" value="{{ user_id or '' }}"
                        placeholder="Enter the same User ID used to generate your plan" min="1" required>
@@ -216,8 +223,8 @@
         </div>
 
         <div class="nav">
-            <a href="/">← Generate a new plan</a>
-            <a href="/view-all-users">📋 View all users</a>
+            <a href="/" data-loading-title="Loading...">← Generate a new plan</a>
+            <a href="/view-all-users" data-loading-title="Loading all users...">📋 View all users</a>
         </div>
     </div>
 </body>

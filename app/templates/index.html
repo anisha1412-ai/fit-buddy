@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FitBuddy - AI Workout Generator</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="/static/css/loading.css" rel="stylesheet">
+    <script src="/static/js/loading.js" defer></script>
     <style>
         * { box-sizing: border-box; }
 
@@ -122,7 +124,12 @@
         <div class="error">{{ error }}</div>
         {% endif %}
 
-        <form action="/generate-workout" method="post">
+        <form action="/generate-workout" method="post"
+              data-loading-title="Building your plan..."
+              data-loading-button="Generating..."
+              data-loading-steps="Validating your details|Creating your 7-day workout plan (Gemini Pro)|Writing a nutrition tip (Gemini Flash)|Saving your plan"
+              data-loading-step-ms="5000"
+              data-loading-note="AI generation usually takes 10–30 seconds. Please keep this page open.">
             <div class="field">
                 <label for="username">Name:</label>
                 <input type="text" id="username" name="username" required>
@@ -154,7 +161,7 @@
             <button type="submit">Generate Plan</button>
         </form>
 
-        <a class="footer-link" href="/view-all-users">📋 View all users (admin)</a>
+        <a class="footer-link" href="/view-all-users" data-loading-title="Loading all users...">📋 View all users (admin)</a>
     </div>
 </body>
 </html>

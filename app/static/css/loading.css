@@ -1,0 +1,119 @@
+/* Full-screen loading overlay shown while a backend request is running.
+   Toggled by /static/js/loading.js. */
+
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    background: rgba(10, 15, 25, 0.82);
+    backdrop-filter: blur(3px);
+}
+
+.loading-overlay.active { display: flex; }
+
+.loading-box {
+    width: 100%;
+    max-width: 380px;
+    background: rgba(20, 27, 40, 0.96);
+    border: 1px solid #334155;
+    border-radius: 16px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
+    padding: 28px 26px;
+    text-align: center;
+    color: #f1f5f9;
+    font-family: 'Roboto', sans-serif;
+}
+
+.loading-spinner {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 16px;
+    border: 4px solid #334155;
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: loading-spin 0.9s linear infinite;
+}
+
+@keyframes loading-spin { to { transform: rotate(360deg); } }
+
+.loading-title {
+    margin: 0 0 4px;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.loading-elapsed {
+    margin: 0 0 18px;
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+.loading-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+.loading-steps li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 0;
+    font-size: 0.92rem;
+    color: #64748b;
+    transition: color 0.2s;
+}
+
+/* Step status dot: pending (grey), active (pulsing blue), done (green tick) */
+.loading-steps li::before {
+    content: "";
+    flex: 0 0 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid #475569;
+    box-sizing: border-box;
+}
+
+.loading-steps li.active { color: #f1f5f9; font-weight: 500; }
+
+.loading-steps li.active::before {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.35);
+    animation: loading-pulse 1.1s ease-in-out infinite;
+}
+
+.loading-steps li.done { color: #86efac; }
+
+.loading-steps li.done::before {
+    content: "✓";
+    border-color: #16a34a;
+    background: #16a34a;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 14px;
+    text-align: center;
+}
+
+@keyframes loading-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(0.8); }
+}
+
+.loading-note {
+    margin: 16px 0 0;
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+/* Submit button while its request is in flight */
+button.is-loading {
+    opacity: 0.7;
+    cursor: wait;
+    transform: none !important;
+}

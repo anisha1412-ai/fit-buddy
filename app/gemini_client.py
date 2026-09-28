@@ -6,20 +6,32 @@ Free-tier API keys have a small per-model daily quota. Each model setting in
 
     GEMINI_PRO_MODEL=gemini-3.7-flash,gemini-3.6-flash,gemini-3.5-flash
 
-If a model is out of quota (429) or retired (404), the next one is tried.
+If a model is out of quota (429), retired (404), overloaded (503/500) or too
+slow (504 / timeout), the next one is tried.
 """
 
 import os
 
 import google.generativeai as genai
 from dotenv import load_dotenv
-from google.api_core.exceptions import NotFound, ResourceExhausted
+from google.api_core.exceptions import (
+    DeadlineExceeded,
+    InternalServerError,
+    NotFound,
+    ResourceExhausted,
+    ServiceUnavailable,
+)
 
 load_dotenv()
 
 # Configure the Gemini SDK once with the API key from .env
 API_KEY = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=API_KEY)
+
+# Seconds to wait for one model before falling back to the next.
+# retry=None stops the SDK from silently retrying an overloaded model for minutes.
+TIMEOUT = float(os.getenv("GEMINI_TIMEOUT", "40"))
+REQUEST_OPTIONS = {"timeout": TIMEOUT, "retry": None}
 
 
 def model_list(env_var: str, default: str) -> list:
@@ -41,12 +53,18 @@ def generate_with_fallback(model_names: list, prompt: str) -> str:
     failures = []
     for name in model_names:
         try:
-            response = genai.GenerativeModel(name).generate_content(prompt)
+            response = genai.GenerativeModel(name).generate_content(
+                prompt, request_options=REQUEST_OPTIONS
+            )
             return response.text
         except ResourceExhausted:
             failures.append(f"{name}: quota exceeded")
         except NotFound:
             failures.append(f"{name}: model not available")
+        except (ServiceUnavailable, InternalServerError):
+            failures.append(f"{name}: overloaded")
+        except DeadlineExceeded:
+            failures.append(f"{name}: timed out after {TIMEOUT:.0f}s")
 
     raise RuntimeError(
         "All Gemini models are unavailable right now (" + "; ".join(failures) + "). "
